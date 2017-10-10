@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="store">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular.min.js"></script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/flatly/bootstrap.min.css">
+	<link rel="stylesheet" href="css/font-awesome.min.css">
+</head>
+<body ng-init="menu=1">
+	<nav class="navbar navbar-default">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a href="" class="navbar-brand">
+					Flatlanders Store
+				</a>
+			</div>
+			<ul class="nav navbar-nav">
+				<li class="active"><a href="" ng-click="menu = 1">Store</a></li>
+				<li class="active"><a href="" ng-click="menu = 2; store.p={} ">Add Product</a></li>
+				<li class="active"><a href=""  ng-click="menu = 3; store.p={};">Edit Product</a></li>
+			</ul>
+		</div>
+	</nav>
+
+	<div ng-controller="StoreController as s" style="background-image: url('./public/img/fondo.jpg')">
+		<div  ng-show="menu===1" ng-hide="store.view" class="container">
+			<div class="panel"  ng-repeat="p in s.products">
+				
+				<em class="pull-right">
+					<div style="margin-right: 20px" >
+						<button ng-click="s.deleteProduct(p._id)" style="margin-top: 40px" class="btn btn-small btn-default">
+							<i class="fa fa-trash-o"></i>
+						</button>
+					</div>
+				</em>
+				<h1 align="center" product-title ng-click="s.getUniqueProduct(p._id); store.view" style="background-color: #99CCCC"><br>{{p.name}}  {{store.view}}</h1>
+				
+				<div align="center">
+					<img ng-src="public/img/{{p.img}}" width="400" height="250" alt="Error">
+				</div>
+				<div style="margin-left: 20px">
+					<span >
+						<p>
+							Code: {{p._id}}
+						</p>
+						<p>
+							<span>{{p.price | currency}}</span>
+							<br>
+						</p>
+						<p>
+							<span>Stock: {{p.stock}}</span>
+							<br>	 
+						</p>
+						<p>				
+							<span>Discount: {{p.discounts}}%</span>
+						</p>
+					</span>
+				</div>
+				<div ng-init="review = 0" >
+						
+					<ul class="nav navbar-brand navbar-default" style="margin-left: 20px" >
+						<li  class="active"><a href=""  ng-click="review=1">Reviews</a></li>
+					</ul>
+					<br><br><br>
+					
+				
+
+						<div style="margin-left: 20px"  ng-show="review===1" ng-hide="review===0">
+							<form  name="reviewForm"  class="form-horizontal">	
+										
+									<blockquote ng-repeat="r in p.reviews">
+										<b class="fa fa-star">
+											 Stars: {{r.stars}}
+										</b><br>	
+										<b class="fa fa-comments">
+											Comment: {{r.comment}}
+										</b><br>
+										<cite class="fa fa-user-circle">
+											by: {{r.author}}
+										</cite><br>
+									</blockquote>
+								
+							</form>
+							<br><br><hr><br>
+							<form style="margin-right: 20px" ng-submit="s.updateProduct(p._id, p.reviews)" name="comentForm">
+
+								<div class="form-group" >
+									<label for="stars">
+										<i class="fa fa-star"></i> Rate product:
+									</label>
+									<select class="form-control" id="stars" ng-model="p.reviews.stars" required>
+										<option value="1">1 Stars</option>
+										<option value="2">2 Stars</option>
+										<option value="3">3 Stars</option>
+										<option value="4">4 Stars</option>
+										<option value="5">5 Stars</option>
+									</select>
+								</div>
+
+							
+								<div class="form-group">
+									<label for="comment"><i class="fa fa-commenting"></i> Add your product comments: </label>
+									<textarea class="form-control" ng-model="p.reviews.comment" type="text" name="" id="comment" cols="30" rows="10" placeholder="Add your comments.." required></textarea>
+								</div>
+								<div class="form-group">
+									<label for="author"><i class="fa fa-user-circle"></i> Please add your email:</label>
+									<input class="form-control" type="email" ng-model="p.reviews.author" placeholder="email@example.com" required>
+								</div>
+								<div class="well">
+									reviewForm is {{reviewForm.$valid}}
+								</div>
+								<div class="form-group pull-right">
+									<input class="form-control btn btn-primary" type="submit" value="Send Review">
+								</div>
+								<br><br><br><br>
+					
+							</form>
+						</div>
+						
+				</div>	
+				
+			</div>
+			
+			
+		</div>
+
+		<div ng-show="menu===2" class="container">
+			<form ng-submit="s.addProduct(store.p); store.p={};" name="productForm" novalidate="true">
+				<div style="margin-left: 20px"  class="form-group">
+					 <label for="name">
+					 	Name of product:
+					 </label>
+					 <input  ng-model="store.p.name" type="text" class="form-control" id="name" required>
+				</div>
+				<div style="margin-left: 20px" class="form group">
+					<label for="price">
+						Price of product:
+					</label>
+					<input ng-model="store.p.price" type="Number" class="form-control"
+					id="price" required>
+				</div>
+				<div style="margin-left: 20px" class="form-group">
+					<label for="img">
+						Image of product:
+					</label>
+					<select ng-model="store.p.img" name="" type="String"	id="img" class="form-control" required>
+						<option value="DiamAzul.jpg">Diamante Azul</option>
+						<option value="DiamBlanco.jpg">Diamante Blanco</option>
+						<option value="Esmeralda.jpg">Esmeralda</option>
+						<option value="ruby.jpg">Ruby</option>
+						<option value="Zafiro.jpg">Zafiro</option>
+					</select>
+				</div>
+				<div style="margin-left: 20px" class="form-group">
+					 <label for="stock">
+					 	Stock of product:
+					 </label>
+					 <input ng-model="store.p.stock" type="text" class="form-control" id="stock" required>
+				</div>
+				<div style="margin-left: 20px" class="form-group">
+					<label for="discounts">
+						Discounts of product:
+					</label>
+					<select ng-model="store.p.discounts" name="" type="Number"	id="discounts" class="form-control" required>
+						<option value="10">10%</option>
+						<option value="15">15%</option>
+						<option value="25">25%</option>
+						<option value="35">35%</option>
+					</select>
+				</div>
+				<div class="form-group pull-right">
+					<input class="form-control btn btn-lg btn-danger" ng-disabled="productForm.$invalid" type="submit" value="Enviar" id="submit" >
+				</div>
+
+			</form>
+			<pre>{{store.p | json}}</pre>
+		</div>
+
+
+
+		<div ng-show="menu===3" class="container">
+			<form ng-submit="s.updateProduct(store.p._id, store.p);  store.p={};" name="productForm1" novalidate="true">
+				<div class="form-group">
+					 <label for="_id">
+					 	Code of product:
+					 </label>
+					 <input ng-model="store.p._id" type="text" class="form-control" id="_id" required>
+				</div>
+				<div class="form-group">
+					 <label for="name">
+					 	Name of product:
+					 </label>
+					 <input ng-model="store.p.name" type="text" class="form-control" id="name" >
+				</div>
+				<div class="form group">
+					<label for="price">
+						Price of product:
+					</label>
+					<input ng-model="store.p.price" type="Number" class="form-control"
+					id="price" >
+				</div>
+				<div class="form-group">
+					<label for="img">
+						Image of product:
+					</label>
+					<select ng-model="store.p.img" name="" type="String"	id="img" class="form-control" >
+						<option value="DiamAzul.jpg">Diamante Azul</option>
+						<option value="DiamBlanco.jpg">Diamante Blanco</option>
+						<option value="Esmeralda.jpg">Esmeralda</option>
+						<option value="ruby.jpg">Ruby</option>
+						<option value="Zafiro.jpg">Zafiro</option>
+					</select>
+				</div>
+				<div class="form-group">
+					 <label for="stock">
+					 	Stock of product:
+					 </label>
+					 <input ng-model="store.p.stock" type="text" class="form-control" id="stock" >
+				</div>
+				<div class="form-group">
+					<label for="discounts">
+						Discounts of product:
+					</label>
+					<select ng-model="store.p.discounts" name="" type="Number"	id="discounts" class="form-control" >
+						<option value="10">10%</option>
+						<option value="15">15%</option>
+						<option value="25">25%</option>
+						<option value="35">35%</option>
+					</select>
+				</div>
+				<div class="form-group pull-right">
+					<input class="form-control btn btn-lg btn-danger" ng-disabled="productForm1.$invalid" type="submit" value="Enviar" id="submit1" >
+				</div>
+
+			</form>
+			<pre>{{store.p | json}}</pre>
+		</div>
+
+
+
+		<div ng-show="!store.view" class="container" ng-submit="s.getUniqueProduct(p._id)">
+			<pre>{{store.product | json}}</pre>
+		</div>
+
+	</div>
+
+
+
+	
+	
+	<script src="js/app.js"></script>
+</body>
+</html>
